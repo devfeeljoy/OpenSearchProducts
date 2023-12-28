@@ -77,24 +77,6 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 					}
 				}
 
-				// "age" 필드를 숫자로 변환
-				ageStr, ok := rawDatum["age"].(string)
-				if ok {
-					age, err := strconv.Atoi(ageStr)
-					if err == nil {
-						rawDatum["age"] = age
-					}
-				}
-
-				// "dyFansNum" 필드를 숫자로 변환
-				dyFansNumStr, ok := rawDatum["dyFansNum"].(string)
-				if ok {
-					dyFansNum, err := strconv.Atoi(dyFansNumStr)
-					if err == nil {
-						rawDatum["dyFansNum"] = dyFansNum
-					}
-				}
-
 				// "fansNum" 필드를 숫자로 변환
 				fansNumStr, ok := rawDatum["fansNum"].(string)
 				if ok {
@@ -104,23 +86,6 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 					}
 				}
 
-				// "likeNum" 필드를 숫자로 변환
-				likeNumStr, ok := rawDatum["likeNum"].(string)
-				if ok {
-					likeNum, err := strconv.Atoi(likeNumStr)
-					if err == nil {
-						rawDatum["likeNum"] = likeNum
-					}
-				}
-
-				// "opusNum" 필드를 숫자로 변환
-				opusNumStr, ok := rawDatum["opusNum"].(string)
-				if ok {
-					opusNum, err := strconv.Atoi(opusNumStr)
-					if err == nil {
-						rawDatum["opusNum"] = opusNum
-					}
-				}
 			}
 			batchData = append(batchData, rawDatum)
 
@@ -153,7 +118,7 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 	var buffer bytes.Buffer
 	for _, data := range batchData {
 		metaData := map[string]map[string]string{
-			"index": {"_index": "influencer"},
+			"index": {"_index": "fans"},
 		}
 		jsonMeta, _ := json.Marshal(metaData)
 		buffer.Write(jsonMeta)
