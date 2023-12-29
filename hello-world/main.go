@@ -77,12 +77,75 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 					}
 				}
 
-				// "fansNum" 필드를 숫자로 변환
-				fansNumStr, ok := rawDatum["fansNum"].(string)
+				// "likeNum" 필드를 숫자로 변환
+				likeNumStr, ok := rawDatum["likeNum"].(string)
 				if ok {
-					fansNum, err := strconv.Atoi(fansNumStr)
+					likeNum, err := strconv.Atoi(likeNumStr)
 					if err == nil {
-						rawDatum["fansNum"] = fansNum
+						rawDatum["likeNum"] = likeNum
+					}
+				}
+
+				// "commentNum" 필드를 숫자로 변환
+				commentNumStr, ok := rawDatum["commentNum"].(string)
+				if ok {
+					commentNum, err := strconv.Atoi(commentNumStr)
+					if err == nil {
+						rawDatum["commentNum"] = commentNum
+					}
+				}
+
+				// "shareNum" 필드를 숫자로 변환
+				shareNumStr, ok := rawDatum["shareNum"].(string)
+				if ok {
+					shareNum, err := strconv.Atoi(shareNumStr)
+					if err == nil {
+						rawDatum["fansNum"] = shareNum
+					}
+				}
+
+				// "collectedNum" 필드를 숫자로 변환
+				collectedNumStr, ok := rawDatum["collectedNum"].(string)
+				if ok {
+					collectedNum, err := strconv.Atoi(collectedNumStr)
+					if err == nil {
+						rawDatum["collectedNum"] = collectedNum
+					}
+				}
+
+				// "duration" 필드를 숫자로 변환
+				durationStr, ok := rawDatum["duration"].(string)
+				if ok {
+					duration, err := strconv.Atoi(durationStr)
+					if err == nil {
+						rawDatum["duration"] = duration
+					}
+				}
+
+				// "videoProdNum" 필드를 숫자로 변환
+				videoProdNumStr, ok := rawDatum["videoProdNum"].(string)
+				if ok {
+					videoProdNum, err := strconv.Atoi(videoProdNumStr)
+					if err == nil {
+						rawDatum["videoProdNum"] = videoProdNum
+					}
+				}
+
+				// "videoProdSales" 필드를 숫자로 변환
+				videoProdSalesStr, ok := rawDatum["videoProdSales"].(string)
+				if ok {
+					videoProdSales, err := strconv.Atoi(videoProdSalesStr)
+					if err == nil {
+						rawDatum["videoProdSales"] = videoProdSales
+					}
+				}
+
+				// "videoProdRevenue" 필드를 숫자로 변환
+				videoProdRevenueStr, ok := rawDatum["videoProdRevenue"].(string)
+				if ok {
+					videoProdRevenue, err := strconv.ParseFloat(videoProdRevenueStr, 64)
+					if err == nil {
+						rawDatum["videoProdRevenue"] = videoProdRevenue
 					}
 				}
 
@@ -118,7 +181,7 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 	var buffer bytes.Buffer
 	for _, data := range batchData {
 		metaData := map[string]map[string]string{
-			"index": {"_index": "fans"},
+			"index": {"_index": "opus"},
 		}
 		jsonMeta, _ := json.Marshal(metaData)
 		buffer.Write(jsonMeta)
