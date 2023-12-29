@@ -77,75 +77,57 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 					}
 				}
 
-				// "likeNum" 필드를 숫자로 변환
-				likeNumStr, ok := rawDatum["likeNum"].(string)
+				// "totalSales" 필드를 숫자로 변환
+				totalSalesStr, ok := rawDatum["totalSales"].(string)
 				if ok {
-					likeNum, err := strconv.Atoi(likeNumStr)
+					totalSales, err := strconv.ParseFloat(totalSalesStr, 64)
 					if err == nil {
-						rawDatum["likeNum"] = likeNum
+						rawDatum["totalSales"] = totalSales
 					}
 				}
 
-				// "commentNum" 필드를 숫자로 변환
-				commentNumStr, ok := rawDatum["commentNum"].(string)
+				// "maxPrice" 필드를 숫자로 변환
+				maxPriceStr, ok := rawDatum["maxPrice"].(string)
 				if ok {
-					commentNum, err := strconv.Atoi(commentNumStr)
+					maxPrice, err := strconv.ParseFloat(maxPriceStr, 64)
 					if err == nil {
-						rawDatum["commentNum"] = commentNum
+						rawDatum["maxPrice"] = maxPrice
 					}
 				}
 
-				// "shareNum" 필드를 숫자로 변환
-				shareNumStr, ok := rawDatum["shareNum"].(string)
+				// "fansIncRate" 필드를 숫자로 변환
+				fansIncRateStr, ok := rawDatum["fansIncRate"].(string)
 				if ok {
-					shareNum, err := strconv.Atoi(shareNumStr)
+					fansIncRate, err := strconv.ParseFloat(fansIncRateStr, 64)
 					if err == nil {
-						rawDatum["fansNum"] = shareNum
+						rawDatum["fansIncRate"] = fansIncRate
 					}
 				}
 
-				// "collectedNum" 필드를 숫자로 변환
-				collectedNumStr, ok := rawDatum["collectedNum"].(string)
+				// "avgViewDuration" 필드를 숫자로 변환
+				avgViewDurationStr, ok := rawDatum["avgViewDuration"].(string)
 				if ok {
-					collectedNum, err := strconv.Atoi(collectedNumStr)
+					avgViewDuration, err := strconv.ParseFloat(avgViewDurationStr, 64)
 					if err == nil {
-						rawDatum["collectedNum"] = collectedNum
+						rawDatum["avgViewDuration"] = avgViewDuration
 					}
 				}
 
-				// "duration" 필드를 숫자로 변환
-				durationStr, ok := rawDatum["duration"].(string)
+				// "avgSalePrice" 필드를 숫자로 변환
+				avgSalePriceStr, ok := rawDatum["avgSalePrice"].(string)
 				if ok {
-					duration, err := strconv.Atoi(durationStr)
+					avgSalePrice, err := strconv.ParseFloat(avgSalePriceStr, 64)
 					if err == nil {
-						rawDatum["duration"] = duration
+						rawDatum["avgSalePrice"] = avgSalePrice
 					}
 				}
 
-				// "videoProdNum" 필드를 숫자로 변환
-				videoProdNumStr, ok := rawDatum["videoProdNum"].(string)
+				// "salesTransRate" 필드를 숫자로 변환
+				salesTransRateStr, ok := rawDatum["salesTransRate"].(string)
 				if ok {
-					videoProdNum, err := strconv.Atoi(videoProdNumStr)
+					salesTransRate, err := strconv.ParseFloat(salesTransRateStr, 64)
 					if err == nil {
-						rawDatum["videoProdNum"] = videoProdNum
-					}
-				}
-
-				// "videoProdSales" 필드를 숫자로 변환
-				videoProdSalesStr, ok := rawDatum["videoProdSales"].(string)
-				if ok {
-					videoProdSales, err := strconv.Atoi(videoProdSalesStr)
-					if err == nil {
-						rawDatum["videoProdSales"] = videoProdSales
-					}
-				}
-
-				// "videoProdRevenue" 필드를 숫자로 변환
-				videoProdRevenueStr, ok := rawDatum["videoProdRevenue"].(string)
-				if ok {
-					videoProdRevenue, err := strconv.ParseFloat(videoProdRevenueStr, 64)
-					if err == nil {
-						rawDatum["videoProdRevenue"] = videoProdRevenue
+						rawDatum["salesTransRate"] = salesTransRate
 					}
 				}
 
@@ -181,7 +163,7 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 	var buffer bytes.Buffer
 	for _, data := range batchData {
 		metaData := map[string]map[string]string{
-			"index": {"_index": "opus"},
+			"index": {"_index": "live"},
 		}
 		jsonMeta, _ := json.Marshal(metaData)
 		buffer.Write(jsonMeta)
