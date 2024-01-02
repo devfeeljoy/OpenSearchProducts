@@ -72,66 +72,73 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 			for key, value := range rawDatum {
 
 				if valueMap, ok := value.(map[string]interface{}); ok {
+
 					if stringValue, ok := valueMap["string"].(string); ok {
 						rawDatum[key] = stringValue
 					}
-				}
-
-				// "totalSales" 필드를 숫자로 변환
-				totalSalesStr, ok := rawDatum["totalSales"].(string)
-				if ok {
-					totalSales, err := strconv.ParseFloat(totalSalesStr, 64)
-					if err == nil {
-						rawDatum["totalSales"] = totalSales
+					if longValue, ok := valueMap["long"].(int64); ok {
+						rawDatum[key] = longValue
+					}
+					if intValue, ok := valueMap["int"].(int32); ok {
+						rawDatum[key] = intValue
 					}
 				}
-
-				// "maxPrice" 필드를 숫자로 변환
-				maxPriceStr, ok := rawDatum["maxPrice"].(string)
-				if ok {
-					maxPrice, err := strconv.ParseFloat(maxPriceStr, 64)
-					if err == nil {
-						rawDatum["maxPrice"] = maxPrice
-					}
-				}
-
-				// "fansIncRate" 필드를 숫자로 변환
-				fansIncRateStr, ok := rawDatum["fansIncRate"].(string)
-				if ok {
-					fansIncRate, err := strconv.ParseFloat(fansIncRateStr, 64)
-					if err == nil {
-						rawDatum["fansIncRate"] = fansIncRate
-					}
-				}
-
-				// "avgViewDuration" 필드를 숫자로 변환
-				avgViewDurationStr, ok := rawDatum["avgViewDuration"].(string)
-				if ok {
-					avgViewDuration, err := strconv.ParseFloat(avgViewDurationStr, 64)
-					if err == nil {
-						rawDatum["avgViewDuration"] = avgViewDuration
-					}
-				}
-
-				// "avgSalePrice" 필드를 숫자로 변환
-				avgSalePriceStr, ok := rawDatum["avgSalePrice"].(string)
-				if ok {
-					avgSalePrice, err := strconv.ParseFloat(avgSalePriceStr, 64)
-					if err == nil {
-						rawDatum["avgSalePrice"] = avgSalePrice
-					}
-				}
-
-				// "salesTransRate" 필드를 숫자로 변환
-				salesTransRateStr, ok := rawDatum["salesTransRate"].(string)
-				if ok {
-					salesTransRate, err := strconv.ParseFloat(salesTransRateStr, 64)
-					if err == nil {
-						rawDatum["salesTransRate"] = salesTransRate
-					}
-				}
-
 			}
+
+			// "totalSales" 필드를 숫자로 변환
+			totalSalesStr, ok := rawDatum["totalSales"].(string)
+			if ok {
+				totalSales, err := strconv.ParseFloat(totalSalesStr, 64)
+				if err == nil {
+					rawDatum["totalSales"] = totalSales
+				}
+			}
+
+			// "maxPrice" 필드를 숫자로 변환
+			maxPriceStr, ok := rawDatum["maxPrice"].(string)
+			if ok {
+				maxPrice, err := strconv.ParseFloat(maxPriceStr, 64)
+				if err == nil {
+					rawDatum["maxPrice"] = maxPrice
+				}
+			}
+
+			// "fansIncRate" 필드를 숫자로 변환
+			fansIncRateStr, ok := rawDatum["fansIncRate"].(string)
+			if ok {
+				fansIncRate, err := strconv.ParseFloat(fansIncRateStr, 64)
+				if err == nil {
+					rawDatum["fansIncRate"] = fansIncRate
+				}
+			}
+
+			// "avgViewDuration" 필드를 숫자로 변환
+			avgViewDurationStr, ok := rawDatum["avgViewDuration"].(string)
+			if ok {
+				avgViewDuration, err := strconv.ParseFloat(avgViewDurationStr, 64)
+				if err == nil {
+					rawDatum["avgViewDuration"] = avgViewDuration
+				}
+			}
+
+			// "avgSalePrice" 필드를 숫자로 변환
+			avgSalePriceStr, ok := rawDatum["avgSalePrice"].(string)
+			if ok {
+				avgSalePrice, err := strconv.ParseFloat(avgSalePriceStr, 64)
+				if err == nil {
+					rawDatum["avgSalePrice"] = avgSalePrice
+				}
+			}
+
+			// "salesTransRate" 필드를 숫자로 변환
+			salesTransRateStr, ok := rawDatum["salesTransRate"].(string)
+			if ok {
+				salesTransRate, err := strconv.ParseFloat(salesTransRateStr, 64)
+				if err == nil {
+					rawDatum["salesTransRate"] = salesTransRate
+				}
+			}
+
 			batchData = append(batchData, rawDatum)
 
 			// 배치 크기에 도달하거나 마지막 레코드인 경우 색인화
