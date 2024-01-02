@@ -170,7 +170,7 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 	var buffer bytes.Buffer
 	for _, data := range batchData {
 		metaData := map[string]map[string]string{
-			"index": {"_index": "live"},
+			"index": {"_index": "lives"},
 		}
 		jsonMeta, _ := json.Marshal(metaData)
 		buffer.Write(jsonMeta)
