@@ -146,7 +146,7 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 			continue
 		}
 		metaData := map[string]interface{}{
-			"update": map[string]interface{}{
+			"index": map[string]interface{}{
 				"_index": "products",
 				"_id":    productId,
 			},
@@ -154,12 +154,9 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 		jsonMeta, _ := json.Marshal(metaData)
 		buffer.Write(jsonMeta)
 		buffer.WriteString("\n")
-		// 실제 데이터 작성
-		doc := map[string]interface{}{
-			"doc":           data,
-			"doc_as_upsert": true, // 새 문서로 삽입하거나 기존 문서 업데이트
-		}
-		jsonData, _ := json.Marshal(doc)
+
+		// 실제 데이터 작성 (doc 필드 없이 직접 삽입)
+		jsonData, _ := json.Marshal(data)
 		buffer.Write(jsonData)
 		buffer.WriteString("\n")
 	}
