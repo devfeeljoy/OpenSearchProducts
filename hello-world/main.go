@@ -31,9 +31,6 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 
 		bucket := record.S3.Bucket.Name
 		key := record.S3.Object.Key
-		//bucket := "burige.314257712735.ap-northeast-2"
-		//key := "NewRank/2023-12-01/buridge_dy_account_daily_data_20231201.avro"
-
 		// S3에서 Avro 파일 가져오기
 		result, err := s3Client.GetObject(&s3.GetObjectInput{
 			Bucket: aws.String(bucket),
@@ -85,57 +82,30 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 				}
 			}
 
-			// "totalSales" 필드를 숫자로 변환
-			totalSalesStr, ok := rawDatum["totalSales"].(string)
+			// "webcastAddSales" 필드를 숫자로 변환
+			webcastAddSalesStr, ok := rawDatum["webcastAddSales"].(string)
 			if ok {
-				totalSales, err := strconv.ParseFloat(totalSalesStr, 64)
+				webcastAddSales, err := strconv.ParseFloat(webcastAddSalesStr, 64)
 				if err == nil {
-					rawDatum["totalSales"] = totalSales
+					rawDatum["webcastAddSales"] = webcastAddSales
 				}
 			}
 
-			// "maxPrice" 필드를 숫자로 변환
-			maxPriceStr, ok := rawDatum["maxPrice"].(string)
+			// "webcastSalesMoney" 필드를 숫자로 변환
+			webcastSalesMoneyStr, ok := rawDatum["webcastSalesMoney"].(string)
 			if ok {
-				maxPrice, err := strconv.ParseFloat(maxPriceStr, 64)
+				webcastSalesMoney, err := strconv.ParseFloat(webcastSalesMoneyStr, 64)
 				if err == nil {
-					rawDatum["maxPrice"] = maxPrice
+					rawDatum["webcastSalesMoney"] = webcastSalesMoney
 				}
 			}
 
-			// "fansIncRate" 필드를 숫자로 변환
-			fansIncRateStr, ok := rawDatum["fansIncRate"].(string)
+			// "price" 필드를 숫자로 변환
+			priceStr, ok := rawDatum["price"].(string)
 			if ok {
-				fansIncRate, err := strconv.ParseFloat(fansIncRateStr, 64)
+				price, err := strconv.ParseFloat(priceStr, 64)
 				if err == nil {
-					rawDatum["fansIncRate"] = fansIncRate
-				}
-			}
-
-			// "avgViewDuration" 필드를 숫자로 변환
-			avgViewDurationStr, ok := rawDatum["avgViewDuration"].(string)
-			if ok {
-				avgViewDuration, err := strconv.ParseFloat(avgViewDurationStr, 64)
-				if err == nil {
-					rawDatum["avgViewDuration"] = avgViewDuration
-				}
-			}
-
-			// "avgSalePrice" 필드를 숫자로 변환
-			avgSalePriceStr, ok := rawDatum["avgSalePrice"].(string)
-			if ok {
-				avgSalePrice, err := strconv.ParseFloat(avgSalePriceStr, 64)
-				if err == nil {
-					rawDatum["avgSalePrice"] = avgSalePrice
-				}
-			}
-
-			// "salesTransRate" 필드를 숫자로 변환
-			salesTransRateStr, ok := rawDatum["salesTransRate"].(string)
-			if ok {
-				salesTransRate, err := strconv.ParseFloat(salesTransRateStr, 64)
-				if err == nil {
-					rawDatum["salesTransRate"] = salesTransRate
+					rawDatum["price"] = price
 				}
 			}
 
@@ -169,14 +139,27 @@ func indexBatchToOpenSearch(batchData []interface{}, openSearchURL string) error
 	//signer *v4.Signer
 	var buffer bytes.Buffer
 	for _, data := range batchData {
-		metaData := map[string]map[string]string{
-			"index": {"_index": "lives"},
+		dataMap := data.(map[string]interface{})
+		productId, ok := dataMap["productId"].(string)
+		if !ok {
+			// productId가 없는 경우 오류 처리
+			continue
+		}
+		metaData := map[string]interface{}{
+			"update": map[string]interface{}{
+				"_index": "products",
+				"_id":    productId,
+			},
 		}
 		jsonMeta, _ := json.Marshal(metaData)
 		buffer.Write(jsonMeta)
 		buffer.WriteString("\n")
-
-		jsonData, _ := json.Marshal(data)
+		// 실제 데이터 작성
+		doc := map[string]interface{}{
+			"doc":           data,
+			"doc_as_upsert": true, // 새 문서로 삽입하거나 기존 문서 업데이트
+		}
+		jsonData, _ := json.Marshal(doc)
 		buffer.Write(jsonData)
 		buffer.WriteString("\n")
 	}
